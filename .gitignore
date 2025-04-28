@@ -1,0 +1,10 @@
+# Gradle build
+/build
+/.gradle
+
+# IDEs
+/.idea
+*.iml
+
+# OS files
+.DS_Store
