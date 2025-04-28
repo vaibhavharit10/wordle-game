@@ -1,10 +1,22 @@
-# Gradle build
+# Gradle build output
 /build
 /.gradle
 
-# IDEs
-/.idea
+# Ignore IDE files (IntelliJ, Eclipse, VSCode)
+.idea/
 *.iml
+*.ipr
+*.iws
+.vscode/
 
-# OS files
+# OS generated files
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
