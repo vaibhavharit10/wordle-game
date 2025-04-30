@@ -3,42 +3,41 @@ package wordle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        System.out.println("*** Welcome to CLI Wordle! ***");
-        System.out.println("Guess the 5-letter word. You have 5 attempts.\n");
+    private static final int WORD_LENGTH = 5;
+    private static final int MAX_ATTEMPTS = 5;
+    private static final String WORDS_FILE = "words.txt";
 
-        List<String> words = Files.readAllLines(Paths.get("words.txt"));
-        if (words.isEmpty()) {
-            System.out.println("Word list is empty! Exiting.");
+    public static void main(String[] args) throws IOException {
+        System.out.println("=== Welcome to CLI Wordle ===");
+        System.out.println("Guess the 5-letter word. You have " + MAX_ATTEMPTS + " attempts.\n");
+
+        String answer = chooseRandomWord();
+        if (answer == null) {
+            System.out.println("ERROR: Failed to load a valid word from the word list. Exiting.");
             return;
         }
 
-        Random random = new Random();
-        String answer = words.get(random.nextInt(words.size())).trim().toUpperCase();
-
         WordleGame game = new WordleGame(answer);
         Scanner scanner = new Scanner(System.in);
+        int attempts = MAX_ATTEMPTS;
 
-        int attempts = 5;
         while (attempts > 0) {
-            System.out.printf("You have %d attempts left. Enter your guess: ", attempts);
+            System.out.printf("Attempts remaining: %d\nEnter your guess: ", attempts);
             String guess = scanner.nextLine().trim();
 
-            if (guess.length() != 5 || !guess.chars().allMatch(Character::isLetter)) {
-                System.out.println("XXX Guess must be exactly 5 letters. XXX\n");
+            if (!isValidGuess(guess)) {
+                System.out.println("Invalid input. Please enter exactly 5 alphabetic characters.\n");
                 continue;
             }
 
             Feedback feedback = game.checkGuess(guess);
-            System.out.println(feedback.coloredOutput() + "\n");
+            System.out.println("\nFeedback: " + feedback.coloredOutput() + "\n");
 
             if (guess.equalsIgnoreCase(answer)) {
-                System.out.println("<<<Congratulations! You guessed the word!>>>");
+                System.out.println("Congratulations! You guessed the word correctly.");
                 return;
             }
 
@@ -46,5 +45,28 @@ public class Main {
         }
 
         System.out.println("Game over. The correct word was: " + answer);
+    }
+
+    private static boolean isValidGuess(String guess) {
+        return guess.length() == WORD_LENGTH && guess.chars().allMatch(Character::isLetter);
+    }
+
+    private static String chooseRandomWord() {
+        try {
+            List<String> words = Files.readAllLines(Paths.get(WORDS_FILE));
+            List<String> validWords = new ArrayList<>();
+            for (String word : words) {
+                word = word.trim();
+                if (word.length() == WORD_LENGTH && word.chars().allMatch(Character::isLetter)) {
+                    validWords.add(word.toUpperCase());
+                }
+            }
+            if (validWords.isEmpty()) return null;
+
+            Random random = new Random();
+            return validWords.get(random.nextInt(validWords.size()));
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
