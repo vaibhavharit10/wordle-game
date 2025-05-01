@@ -14,37 +14,44 @@ public class Main {
         System.out.println("=== Welcome to CLI Wordle ===");
         System.out.println("Guess the 5-letter word. You have " + MAX_ATTEMPTS + " attempts.\n");
 
-        String answer = chooseRandomWord();
-        if (answer == null) {
-            System.out.println("ERROR: Failed to load a valid word from the word list. Exiting.");
-            return;
-        }
-
-        WordleGame game = new WordleGame(answer);
         Scanner scanner = new Scanner(System.in);
-        int attempts = MAX_ATTEMPTS;
 
-        while (attempts > 0) {
-            System.out.printf("Attempts remaining: %d\nEnter your guess: ", attempts);
-            String guess = scanner.nextLine().trim();
-
-            if (!isValidGuess(guess)) {
-                System.out.println("Invalid input. Please enter exactly 5 alphabetic characters.\n");
-                continue;
-            }
-
-            Feedback feedback = game.checkGuess(guess);
-            System.out.println("\nFeedback: " + feedback.coloredOutput() + "\n");
-
-            if (guess.equalsIgnoreCase(answer)) {
-                System.out.println("Congratulations! You guessed the word correctly.");
+        do {
+            String answer = chooseRandomWord();
+            if (answer == null) {
+                System.out.println("ERROR: Failed to load a valid word from the word list. Exiting.");
                 return;
             }
 
-            attempts--;
-        }
+            WordleGame game = new WordleGame(answer);
+            int attempts = MAX_ATTEMPTS;
 
-        System.out.println("Game over. The correct word was: " + answer);
+            while (attempts > 0) {
+                System.out.printf("Attempts remaining: %d\nEnter your guess: ", attempts);
+                String guess = scanner.nextLine().trim();
+
+                if (!isValidGuess(guess)) {
+                    System.out.println("Invalid input. Please enter exactly 5 alphabetic characters.\n");
+                    continue;
+                }
+
+                Feedback feedback = game.checkGuess(guess);
+                System.out.println("\nFeedback: " + feedback.coloredOutput() + "\n");
+
+                if (guess.equalsIgnoreCase(answer)) {
+                    System.out.println("Congratulations! You guessed the word correctly.");
+                    break;
+                }
+
+                attempts--;
+            }
+
+            if (attempts == 0) {
+                System.out.println("Game over. The correct word was: " + answer);
+            }
+
+            System.out.print("Do you want to play again? (y/n): ");
+        } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
     }
 
     private static boolean isValidGuess(String guess) {
