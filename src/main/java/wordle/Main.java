@@ -23,39 +23,11 @@ public class Main {
                 return;
             }
 
-            WordleGame game = new WordleGame(answer);
-            int attempts = MAX_ATTEMPTS;
-
-            while (attempts > 0) {
-                System.out.printf("Attempts remaining: %d\nEnter your guess: ", attempts);
-                String guess = scanner.nextLine().trim();
-
-                if (!isValidGuess(guess)) {
-                    System.out.println("Invalid input. Please enter exactly 5 alphabetic characters.\n");
-                    continue;
-                }
-
-                Feedback feedback = game.checkGuess(guess);
-                System.out.println("\nFeedback: " + feedback.coloredOutput() + "\n");
-
-                if (guess.equalsIgnoreCase(answer)) {
-                    System.out.println("Congratulations! You guessed the word correctly.");
-                    break;
-                }
-
-                attempts--;
-            }
-
-            if (attempts == 0) {
-                System.out.println("Game over. The correct word was: " + answer);
-            }
+            WordleRound session = new WordleRound(answer, scanner);
+            session.play();
 
             System.out.print("Do you want to play again? (y/n): ");
         } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
-    }
-
-    private static boolean isValidGuess(String guess) {
-        return guess.length() == WORD_LENGTH && guess.chars().allMatch(Character::isLetter);
     }
 
     private static String chooseRandomWord() {

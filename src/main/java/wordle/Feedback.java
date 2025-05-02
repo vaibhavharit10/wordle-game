@@ -1,5 +1,10 @@
 package wordle;
 
+import static wordle.Constants.ANSI_RESET;
+import static wordle.Constants.GRAY_BACKGROUND;
+import static wordle.Constants.GREEN_BACKGROUND;
+import static wordle.Constants.YELLOW_BACKGROUND;
+
 public record Feedback(char[] guess, char[] marks) {
 
     public String coloredOutput() {
@@ -7,15 +12,15 @@ public record Feedback(char[] guess, char[] marks) {
         for (int i = 0; i < guess.length; i++) {
             String color;
             switch (marks[i]) {
-                case 'G' -> color = "\u001B[42m"; // Green background
-                case 'Y' -> color = "\u001B[43m"; // Yellow background
-                default  -> color = "\u001B[47m"; // Gray background
+                case 'G' -> color = GREEN_BACKGROUND;
+                case 'Y' -> color = YELLOW_BACKGROUND;
+                default  -> color = GRAY_BACKGROUND;
             }
             sb.append(color)
                     .append(" ")
                     .append(guess[i])
                     .append(" ")
-                    .append("\u001B[0m ");
+                    .append(ANSI_RESET);
         }
         return sb.toString();
     }
