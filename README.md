@@ -50,5 +50,12 @@ git clone https://github.com/vaibhavharit10/wordle-game.git
 ```bash
 java -cp build/classes/java/main wordle.Main
 ```
+
+## Run the game with Docker
+If you have Docker installed, you can run the game in a container without needing Java or Gradle on your machine.
+```bash
+docker build -t wordle-cli .
+docker run -it wordle-cli
+
  
 
